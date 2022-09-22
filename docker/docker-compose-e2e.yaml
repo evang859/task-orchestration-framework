@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:14
+    restart: always
+    container_name: task-framework-e2e-tests-db
+    ports:
+      - '5444:5432'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: task-framework-e2e-tests

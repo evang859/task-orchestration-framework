@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id                 String        @id @default(uuid()) @db.Uuid()
+  requestUrl         String        @map("request_url") @db.Text()
+  successCallbackUrl String?       @map("success_callback_url") @db.Text()
+  failureCallbackUrl String?       @map("failure_callback_url") @db.Text()
+  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamp()
+  updatedAt          DateTime?     @updatedAt @map("updated_at") @db.Timestamp()
+  TaskAttempt        TaskAttempt[]
+
+  @@map("task")
+}
+
+model TaskAttempt {
+  id                 String    @id @default(uuid()) @db.Uuid()
+  task               Task      @relation(fields: [taskId], references: [id])
+  taskId             String    @map("task_id") @db.Uuid()
+  responseStatusCode String    @map("response_status_code") @db.Text()
+  responseBody       String    @map("response_body")
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamp()
+  updatedAt          DateTime? @updatedAt @map("updated_at") @db.Timestamp()
+
+  @@map("task_attempt")
+}
